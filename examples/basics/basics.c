@@ -1,58 +1,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "pico/stdlib.h"
-#include "hardware/pio.h"
-#include "hardware/dma.h"
-#include "hardware/irq.h"
-#include "ws2812.pio.h"
-
-#include "noise_nugget.h"
-
-#define WS2812_PIN_BASE 24
-#define NUM_PIXELS 24
-#define IS_RGBW true
-
-static inline void put_pixel(uint32_t pixel_grb) {
-    pio_sm_put_blocking(pio0, 0, pixel_grb << 8u);
-}
-
-static inline uint32_t urgb_u32(uint8_t r, uint8_t g, uint8_t b) {
-    return
-            ((uint32_t) (r) << 8) |
-            ((uint32_t) (g) << 16) |
-            (uint32_t) (b);
-}
-
-void pattern_random(uint len) {
-    for (int i = 0; i < len; ++i) {
-        put_pixel(rand());
-    }
-}
+#include "pgb1.h"
 
 int main(void) {
     stdio_init_all();
     printf("PGB-1 basic example\n");
 
     keyboard_init();
-
-    // todo get free sm
-    PIO pio = pio0;
-    int sm = 0;
-    uint offset = pio_add_program(pio, &ws2812_program);
-    ws2812_program_init(pio, sm, offset, WS2812_PIN_BASE, 800000, IS_RGBW);
-    
+    leds_init();
+    screen_init();
     while (1) {
-        pattern_random(NUM_PIXELS);
         keyboard_scan();
 
+        screen_clear();
+        screen_draw_line(0, 0, 127, 63, true);
+        screen_draw_line(127, 0, 0, 63, true);
+        screen_print(10, 10, "Hello PGB-1!");
+        screen_update();
+
+        leds_clear();
         if (pressed (K_UP)) {
             printf("UP pressed\n");
+            leds_set(0, 255, 0, 0);
+            leds_set(3, 255, 0, 0);
+            leds_set(4, 255, 0, 0);
+            leds_set(5, 255, 0, 0);
+            leds_set(6, 255, 0, 0);
+            leds_set(7, 255, 0, 0);
+            leds_set(23, 255, 0, 0);
         } else if (falling (K_DOWN)) {
+            leds_set(1, 0, 255, 0);
             printf("DOWN falling\n");
         } else if (raising (K_LEFT)) {
+            leds_set(2, 0, 0, 255);
             printf("LEFT raising\n");
         }
+
+
+        leds_update();
 
         sleep_ms(100);
     }
