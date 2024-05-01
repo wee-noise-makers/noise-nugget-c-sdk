@@ -1,7 +1,7 @@
 add_library(noise_nugget INTERFACE)
 
 pico_generate_pio_header(noise_nugget ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio)
-# pico_generate_pio_header(picosystem ${CMAKE_CURRENT_LIST_DIR}/screen_double.pio)
+pico_generate_pio_header(noise_nugget ${CMAKE_CURRENT_LIST_DIR}/duplex_i2s.pio)
 
 target_sources(noise_nugget INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/noise_nugget.c
@@ -12,7 +12,7 @@ set(NOISE_NUGGET_LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/noise_nugget_memmap.ld)
 
 target_include_directories(noise_nugget INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
-target_link_libraries(noise_nugget INTERFACE pico_stdlib hardware_pio hardware_spi hardware_pwm hardware_dma hardware_irq hardware_adc hardware_interp)
+target_link_libraries(noise_nugget INTERFACE pico_stdlib hardware_pio hardware_spi hardware_pwm hardware_dma hardware_irq hardware_i2c hardware_interp)
 
 function(noise_nugget_executable NAME SOURCES)
   add_executable(

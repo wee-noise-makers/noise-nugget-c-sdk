@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "noise_nugget.h"
 #include "pgb1.h"
 
 int main(void) {
@@ -10,6 +11,10 @@ int main(void) {
     keyboard_init();
     leds_init();
     screen_init();
+    if (!audio_init(44100)) {
+        printf("PGB-1 audio init failed!");
+    }
+
     while (1) {
         keyboard_scan();
 

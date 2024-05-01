@@ -86,7 +86,6 @@ void leds_init(void) {
     uint offset = pio_add_program(LED_PIO, &ws2812_program);
     ws2812_program_init(LED_PIO, LED_PIO_SM, offset, WS2812_PIN, 800000, IS_RGBW);
 
-
     leds_dma_chan = dma_claim_unused_channel(true);
     dma_channel_config c = dma_channel_get_default_config(leds_dma_chan);
     channel_config_set_transfer_data_size(&c, DMA_SIZE_32);
@@ -223,13 +222,11 @@ void screen_init(void) {
     sleep_ms(10);
     gpio_put(N_RESET_PIN, true);
 
-
     screen_write_cmd(SET_DISP | 0x01);
 
     for (int i = 0; i < sizeof(init_cmds) / sizeof(*init_cmds); i++){
         screen_write_cmd(init_cmds[i]);
     }
-
 
     screen_dma_chan = dma_claim_unused_channel(true);
     dma_channel_config c = dma_channel_get_default_config(screen_dma_chan);
