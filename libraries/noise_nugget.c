@@ -28,26 +28,57 @@
 int i2s_out_dma_chan = -1; // init with invalid DMA channel id
 int i2s_in_dma_chan = -1; // init with invalid DMA channel id
 
-#define TEST_AUDIO_BUFFER_SIZE 256
-uint32_t test_audio_buffer_in[TEST_AUDIO_BUFFER_SIZE] = {0x42};
-uint32_t test_audio_buffer_out[TEST_AUDIO_BUFFER_SIZE] = {0x42};
+#define DUMMY_AUDIO_BUFFER_SIZE 256
+const uint32_t zeroes_audio_buffer[DUMMY_AUDIO_BUFFER_SIZE] = {0x0};
+uint32_t dev_null_audio_buffer[DUMMY_AUDIO_BUFFER_SIZE] = {0x0};
+
+audio_cb_t user_audio_input_callback = NULL;
+audio_cb_t user_audio_output_callback = NULL;
 
 void dma_out_handler() {
+    uint32_t *buffer = NULL;
+    uint32_t point_count = 0;
+
     // Clear the interrupt request.
     dma_hw->ints0 = 1u << i2s_out_dma_chan;
 
+    // Call user callback, if any
+    if (user_audio_output_callback != NULL) {
+        user_audio_output_callback (&buffer, &point_count);
+    }
+
+    // No user callback or user returned NULL
+    if (buffer == NULL) {
+        buffer = (void*)zeroes_audio_buffer;
+        point_count = DUMMY_AUDIO_BUFFER_SIZE;
+    }
+
     dma_channel_transfer_from_buffer_now(i2s_out_dma_chan,
-                                         test_audio_buffer_out,
-                                         TEST_AUDIO_BUFFER_SIZE);
+                                         buffer,
+                                         point_count);
 }
 
 void dma_in_handler() {
+    uint32_t *buffer = NULL;
+    uint32_t point_count = 0;
+
     // Clear the interrupt request.
     dma_hw->ints1 = 1u << i2s_in_dma_chan;
 
+    // Call user callback, if any
+    if (user_audio_input_callback != NULL) {
+        user_audio_input_callback (&buffer, &point_count);
+    }
+
+    // No user callback or user returned NULL
+    if (buffer == NULL) {
+        buffer = (void*)dev_null_audio_buffer;
+        point_count = DUMMY_AUDIO_BUFFER_SIZE;
+    }
+
     dma_channel_transfer_to_buffer_now(i2s_in_dma_chan,
-                                       test_audio_buffer_in,
-                                       TEST_AUDIO_BUFFER_SIZE);
+                                       buffer,
+                                       point_count);
 }
 
 void setup_audio_pin(int pin, bool out) {
@@ -59,11 +90,6 @@ void setup_audio_pin(int pin, bool out) {
 }
 
 bool init_i2s(int sample_rate) {
-
-
-    for (int i = 0; i < TEST_AUDIO_BUFFER_SIZE; i++) {
-        test_audio_buffer_out[i] = (i % 10) == 0 ? 0x80008000 : 0x7fff7fff;
-    }
 
     // Square wave with PWM for the MCLK signal
 
@@ -213,8 +239,14 @@ bool init_wm8960(void){
     return success;
 }
 
-bool audio_init(int sample_rate) {
+bool audio_init(int sample_rate,
+                audio_cb_t output_callback,
+                audio_cb_t input_callback)
+{
     bool success = true;
+
+    user_audio_input_callback = input_callback;
+    user_audio_output_callback = output_callback;
 
     success &= init_i2s(sample_rate);
     success &= init_i2c();
