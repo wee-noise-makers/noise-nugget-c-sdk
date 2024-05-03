@@ -95,75 +95,28 @@ void send_CC(uint8_t chan, uint8_t controller, uint8_t val) {
     send_MIDI(msg);
 }
 
-typedef enum synth_param {
-    Shape = 0,
-    Timbre,
-    AD_Timbre,
-    Color,
-    AD_Color,
-    Attack,
-    Decay,
-    Volume,
-    PARAM_COUNT
-} synth_param;
+synth_param selected_param = Timbre;
+uint8_t param_value[PARAM_COUNT] = {6, 0, 6, 0, 0, 0, 6, 10};
 
-uint8_t param_value[PARAM_COUNT] = {0, 6, 0, 6, 0, 0, 6, 10};
+void incr_param(synth_param id) {
+    if (param_value[id] < MAX_MIDI_VAL) {
+        param_value[id] += 1;
+        send_CC(0, id, param_value[id]);
+    }
+}
 
-const char *param_name[PARAM_COUNT] =
-{
-    "Shape",
-    "Timbre",
-    "Timbre Env",
-    "Color",
-    "Color Env",
-    "Attack",
-    "Decay",
-    "Volume"
-};
+void decr_param(synth_param id) {
+    if (param_value[id] > 0) {
+        param_value[id] -= 1;
+        send_CC(0, id, param_value[id]);
+    }
+}
 
-const char *shape_name[15] =
-{
-    "Saw Swarm",
-    "Saw Comb",
-    "Triple Saw",
-    "Triple Square",
-    "Triple Triangle",
-    "Triple Sine",
-    "Filter BP",
-    "Vosim",
-    "Feedback FM",
-    "Plucked",
-    "Bowed",
-    "Blown",
-    "Paraphonic",
-    "Twin Peaks",
-    "Kick",
-};
-
-const char *value_name[15] =
-{
-    "0",
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-    "13",
-    "14",
-};
-
-synth_param selected_param = Shape;
+#define DEFAULT_BASE_NOTE 48 // C3
+int base_note = DEFAULT_BASE_NOTE;
 
 int main(void) {
     stdio_init_all();
-    printf("PGB-1 basic example\n");
 
     multicore_fifo_drain();
     sleep_ms(200);
@@ -175,7 +128,7 @@ int main(void) {
     leds_init();
     screen_init();
     if (!audio_init(44100, audio_out_cb, NULL)) {
-        printf("PGB-1 audio init failed!");
+        printf("PGB-1 audio init failed");
     }
 
     /* Set synth parameters */
@@ -188,12 +141,42 @@ int main(void) {
         send_buffer_id(i);
     }
 
-    while (1) {
+
+    leds_clear();
+    leds_set_color(0, Spring_Green); // Shape
+    leds_set_color(1, Spring_Green); // Shape
+
+    leds_set_color(4, Magenta);  // Timbre
+    leds_set_color(14, Magenta); // Timbre
+
+    leds_set_color(13, Yellow); // Color
+    leds_set_color(23, Yellow); // Color
+
+    leds_set_color(5, Azure); // Octave down
+    leds_set_color(12, Cyan); // Octave UP
+    leds_set_color(8, Cyan);  // Octave reset
+
+    // Keyboard
+    leds_set_color(6, White);
+    leds_set_color(7, White);
+    leds_set_color(9, White);
+    leds_set_color(10, White);
+    leds_set_color(11, White);
+
+    leds_set_color(15, White);
+    leds_set_color(16, White);
+    leds_set_color(17, White);
+    leds_set_color(18, White);
+    leds_set_color(19, White);
+    leds_set_color(20, White);
+    leds_set_color(21, White);
+    leds_set_color(22, White);
+
+    leds_update();
+    for (uint32_t frame = 0; ; frame++) {
         keyboard_scan();
 
-        leds_clear();
-        screen_clear();
-
+        // D-PAD to select current param
         if (falling (K_LEFT)) {
             if (selected_param > 0) {
                 selected_param -= 1;
@@ -212,93 +195,132 @@ int main(void) {
             }
         }
 
-        if (falling (K_B)) {
-            if (param_value[selected_param] > 0) {
-                param_value[selected_param] -= 1;
-                send_CC(0, selected_param, param_value[selected_param]);
-            }
-        } else if (raising (K_A)) {
-            if (param_value[selected_param] < 15) {
-                param_value[selected_param] += 1;
-                send_CC(0, selected_param, param_value[selected_param]);
-            }
+        // A and B to change selected param value
+        if (falling(K_A)) {
+            incr_param(selected_param);
+        } else if (falling(K_B)) {
+            decr_param(selected_param);
         }
 
-        if (falling (K_9)) {
-            send_note_on (0, 60, 127);
-        }
-        if (falling (K_2)) {
-            send_note_on (0, 61, 127);
-        }
-        if (falling (K_10)) {
-            send_note_on (0, 62, 127);
-        }
-        if (falling (K_3)) {
-            send_note_on (0, 63, 127);
-        }
-        if (falling (K_11)) {
-            send_note_on (0, 64, 127);
-        }
-        if (falling (K_12)) {
-            send_note_on (0, 65, 127);
-        }
-        if (falling (K_5)) {
-            send_note_on (0, 66, 127);
-        }
-        if (falling (K_13)) {
-            send_note_on (0, 67, 127);
-        }
-        if (falling (K_6)) {
-            send_note_on (0, 68, 127);
-        }
-        if (falling (K_14)) {
-            send_note_on (0, 69, 127);
-        }
-        if (falling (K_7)) {
-            send_note_on (0, 70, 127);
-        }
-        if (falling (K_15)) {
-            send_note_on (0, 71, 127);
-        }
-        if (falling (K_16)) {
-            send_note_on (0, 72, 127);
+        // Shortcuts for Shape
+        if (falling(K_SONG)) {
+            incr_param(Shape);
+        } else if (falling(K_MENU)) {
+            decr_param(Shape);
         }
 
-        screen_print(4, 4, param_name[selected_param]);
-        switch (selected_param) {
-        case Shape:
-            screen_print(4, 13, shape_name[param_value[selected_param]]);
-            break;
-        default:
-            screen_print(4, 13, value_name[param_value[selected_param]]);
-            break;
-        }
-
-        for (int i = 0; i < PARAM_COUNT; i++) {
-            const int x0 = 19 + (i % 4) * 27;
-            const int y0 = 21 + (i < 4 ? 1 : 2) * 20;
-            const int y1 = y0 - param_value[i];
-
-            for (int w = 0; w < 8; w++) {
-                screen_draw_line (x0 + w, y0, x0 + w, y1, true);
+        if (frame % 100 == 0) {
+            // Shortcuts for Timbre
+            if (pressed(K_TRACK)) {
+                incr_param(Timbre);
+            } else if (pressed(K_STEP)) {
+                decr_param(Timbre);
             }
 
-            if (selected_param == i) {
-                const int left  = x0 - 2;
-                const int right = x0 + 9;
-                const int bot   = y0 + 2;
-                const int top   = y0 - 17;
-                screen_draw_line (left, bot, right, bot, true);
-                screen_draw_line (left, top, right, top, true);
-                screen_draw_line (left, bot, left, top, true);
-                screen_draw_line (right, bot, right, top, true);
-            }
+            // Shortcuts for Color
+            if (pressed(K_PLAY)) {
+                incr_param(Color);
+             } else if (pressed(K_REC)) {
+                 decr_param(Color);
+             }
         }
 
 
-        leds_update();
-        screen_update();
+        // Octave Up/Down
+        if (falling(K_1)) {
+            if (base_note > 12) {
+                base_note -= 12;
+            }
+        } else if (falling(K_8)) {
+            if (base_note < 108) {
+                base_note += 12;
+            }
+        } else if (falling(K_4)) {
+            base_note = DEFAULT_BASE_NOTE;
+        }
 
-        sleep_ms(100);
+        // Keyboard
+        if (falling(K_9)) {
+            send_note_on (0, base_note + 0, 127);
+        }
+        if (falling(K_2)) {
+            send_note_on (0, base_note + 1, 127);
+        }
+        if (falling(K_10)) {
+            send_note_on (0, base_note + 2, 127);
+        }
+        if (falling(K_3)) {
+            send_note_on (0, base_note + 3, 127);
+        }
+        if (falling(K_11)) {
+            send_note_on (0, base_note + 4, 127);
+        }
+        if (falling(K_12)) {
+            send_note_on (0, base_note + 5, 127);
+        }
+        if (falling(K_5)) {
+            send_note_on (0, base_note + 6, 127);
+        }
+        if (falling(K_13)) {
+            send_note_on (0, base_note + 7, 127);
+        }
+        if (falling(K_6)) {
+            send_note_on (0, base_note + 8, 127);
+        }
+        if (falling(K_14)) {
+            send_note_on (0, base_note + 9, 127);
+        }
+        if (falling(K_7)) {
+            send_note_on (0, base_note + 10, 127);
+        }
+        if (falling(K_15)) {
+            send_note_on (0, base_note + 11, 127);
+        }
+        if (falling(K_16)) {
+            send_note_on (0, base_note + 12, 127);
+        }
+
+        /* Update the screen every 300 frames */
+        if (frame % 300 == 0) {
+            screen_clear();
+            screen_print(0, 57, value_name[base_note / 12]);
+
+            switch (selected_param) {
+            case Shape:
+                screen_print(0, 0, shape_name[param_value[selected_param]]);
+                break;
+            default:
+                screen_print(0, 0, param_name[selected_param]);
+                screen_print(70, 0, value_name[param_value[selected_param]]);
+                break;
+            }
+
+            for (int i = 0; i < PARAM_COUNT; i++) {
+                const int x0 = 19 + (i % 4) * 27;
+                const int y0 = -2 + (i < 4 ? 1 : 2) * 27;
+                const int y1 = y0 - param_value[i];
+
+                for (int w = 0; w < 8; w++) {
+                    screen_draw_line (x0 + w, y0, x0 + w, y1, true);
+                }
+
+                screen_print(x0 - 1, y0 + 4, param_name_short[i]);
+
+                if (selected_param == i) {
+                    const int left  = x0 - 2;
+                    const int right = x0 + 9;
+                    const int bot   = y0 + 1;
+                    const int top   = y0 - 16;
+                    screen_draw_line (left, bot, right, bot, true);
+                    screen_draw_line (left, top, right, top, true);
+                    screen_draw_line (left, bot, left, top, true);
+                    screen_draw_line (right, bot, right, top, true);
+                }
+            }
+
+            screen_update();
+        }
+
+        sleep_ms(1);
     }
 }

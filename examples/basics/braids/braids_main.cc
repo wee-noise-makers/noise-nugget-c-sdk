@@ -43,7 +43,6 @@ using namespace braids;
 using namespace std;
 using namespace stmlib;
 
-#define MAX_MIDI_VAL (15)
 #define MAX_PARAM (32767)
 
 #define POLY_OSCs (NBR_OF_OSCs - 0) // Number of oscillators for the poly chan
@@ -84,7 +83,7 @@ const MacroOscillatorShape shape_from_param[MAX_MIDI_VAL + 1] =
     MACRO_OSC_SHAPE_DIGITAL_FILTER_BP, // +
     // MACRO_OSC_SHAPE_DIGITAL_FILTER_HP,
     MACRO_OSC_SHAPE_VOSIM, // +
-    // MACRO_OSC_SHAPE_VOWEL,
+    MACRO_OSC_SHAPE_VOWEL,
     // MACRO_OSC_SHAPE_VOWEL_FOF,
 
     // MACRO_OSC_SHAPE_HARMONICS,
@@ -102,7 +101,7 @@ const MacroOscillatorShape shape_from_param[MAX_MIDI_VAL + 1] =
     // MACRO_OSC_SHAPE_WAVETABLES, // +
     // MACRO_OSC_SHAPE_WAVE_MAP,
     // MACRO_OSC_SHAPE_WAVE_LINE,
-    MACRO_OSC_SHAPE_WAVE_PARAPHONIC, // ++
+    // MACRO_OSC_SHAPE_WAVE_PARAPHONIC, // ++
 
     // MACRO_OSC_SHAPE_FILTERED_NOISE,
     MACRO_OSC_SHAPE_TWIN_PEAKS_NOISE, // ++
@@ -360,39 +359,38 @@ void braids_main(void) {
 
                 if (chan < NBR_OF_CHANs) {
                     switch (key) {
-                    case 0:{
+                    case Shape:{
                         if (val <= MAX_MIDI_VAL) {
                             const MacroOscillatorShape shape = shape_from_param[val];
                             settings[chan].SetValue(SETTING_OSCILLATOR_SHAPE, shape);
                         }
                         break;
                     }
-                    case 1:{
+                    case Timbre:{
                         cc_params[chan][0] = (int32_t)val * (MAX_PARAM / MAX_MIDI_VAL);
                         break;
                     }
-                    case 2:{
+                    case AD_Timbre:{
                         settings[chan].SetValue(SETTING_AD_TIMBRE, val);
                         break;
                     }
-                    case 3:{
+                    case Color:{
                         cc_params[chan][1] = (int32_t)val * (MAX_PARAM / MAX_MIDI_VAL);
                         break;
                     }
-                    case 4:{
+                    case AD_Color:{
                         settings[chan].SetValue(SETTING_AD_COLOR, val);
                         break;
                     }
-                    case 5:{
+                    case Attack:{
                         settings[chan].SetValue(SETTING_AD_ATTACK, val);
                         break;
                     }
-                    case 6:{
+                    case Decay:{
                         settings[chan].SetValue(SETTING_AD_DECAY, val);
                         break;
                     }
-                    case 7:{
-                        // Volume
+                    case Volume:{
                         volume[chan] = val * (MAX_PARAM / MAX_MIDI_VAL);
                         break;
                     }

@@ -113,12 +113,16 @@ void leds_clear(void) {
     memset(leds_framebuffer, 0, sizeof(leds_framebuffer));
 }
 
-void leds_set(int id, uint8_t r, uint8_t g, uint8_t b) {
+void leds_set_rgb(int id, uint8_t r, uint8_t g, uint8_t b) {
     if (id >= 0 && id < NUM_LEDS) {
         leds_framebuffer[id] = ((uint32_t) (r) << 16) |
             ((uint32_t) (g) << 24) |
             ((uint32_t) (b) << 8);
     }
+}
+
+void leds_set_color(int id, LedColor rgb) {
+    leds_set_rgb(id, rgb.r, rgb.g, rgb.b);
 }
 
 // register definitions
@@ -256,7 +260,7 @@ bool screen_update(void) {
 }
 
 void screen_set_pixel (int x, int y, bool set) {
-    if (x > 0 && x < WIDTH && y > 0 && y < HEIGHT) {
+    if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
         int index = x + (y / 8) * WIDTH;
         uint8_t *byte = &screen_framebuffer[index];
         if (set) {

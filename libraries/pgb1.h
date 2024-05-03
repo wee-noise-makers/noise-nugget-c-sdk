@@ -44,7 +44,27 @@ bool raising(uint32_t key);
 void leds_init(void);
 void leds_clear(void);
 bool leds_update(void);
-void leds_set(int id, uint8_t r, uint8_t g, uint8_t b);
+
+typedef struct LedColor {
+    uint8_t r; uint8_t g; uint8_t b;
+} LedColor;
+
+#define White        (LedColor){255 / 4, 255 / 4, 255 / 4}
+#define Red          (LedColor){255 / 4, 000 / 4, 000 / 4}
+#define Rose         (LedColor){255 / 4, 000 / 4, 128 / 4}
+#define Magenta      (LedColor){255 / 4, 000 / 4, 255 / 4}
+#define Violet       (LedColor){128 / 4, 000 / 4, 255 / 4}
+#define Blue         (LedColor){000 / 4, 000 / 4, 255 / 4}
+#define Azure        (LedColor){000 / 4, 128 / 4, 255 / 4}
+#define Cyan         (LedColor){000 / 4, 255 / 4, 255 / 4}
+#define Spring_Green (LedColor){000 / 4, 255 / 4, 128 / 4}
+#define Green        (LedColor){000 / 4, 255 / 4, 000 / 4}
+#define Chartreuse   (LedColor){128 / 4, 255 / 4, 000 / 4}
+#define Yellow       (LedColor){255 / 4, 255 / 4, 000 / 4}
+#define Orange       (LedColor){255 / 4, 128 / 4, 000 / 4}
+
+void leds_set_rgb(int id, uint8_t r, uint8_t g, uint8_t b);
+void leds_set_color(int id, LedColor rgb);
 
 void screen_init(void);
 void screen_clear(void);
