@@ -1,5 +1,5 @@
 noise_nugget_executable(
-    basics
+    braids_pocket
 
     braids/analog_oscillator.cc
     braids/braids_main.cc
@@ -10,12 +10,12 @@ noise_nugget_executable(
     braids/random.cc
     braids/settings.cc
 
-    basics.c
+    braids_pocket.c
 )
 
-target_link_libraries(basics pico_multicore)
+target_link_libraries(braids_pocket pico_multicore)
 
-pico_add_extra_outputs(basics)
+pico_add_extra_outputs(braids_pocket)
 
-pico_enable_stdio_usb(basics 1)
-pico_enable_stdio_uart(basics 0)
+pico_enable_stdio_usb(braids_pocket 1)
+pico_enable_stdio_uart(braids_pocket 0)
