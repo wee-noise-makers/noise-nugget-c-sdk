@@ -49,19 +49,19 @@ typedef struct LedColor {
     uint8_t r; uint8_t g; uint8_t b;
 } LedColor;
 
-#define White        (LedColor){255 / 4, 255 / 4, 255 / 4}
-#define Red          (LedColor){255 / 4, 000 / 4, 000 / 4}
-#define Rose         (LedColor){255 / 4, 000 / 4, 128 / 4}
-#define Magenta      (LedColor){255 / 4, 000 / 4, 255 / 4}
-#define Violet       (LedColor){128 / 4, 000 / 4, 255 / 4}
-#define Blue         (LedColor){000 / 4, 000 / 4, 255 / 4}
-#define Azure        (LedColor){000 / 4, 128 / 4, 255 / 4}
-#define Cyan         (LedColor){000 / 4, 255 / 4, 255 / 4}
-#define Spring_Green (LedColor){000 / 4, 255 / 4, 128 / 4}
-#define Green        (LedColor){000 / 4, 255 / 4, 000 / 4}
-#define Chartreuse   (LedColor){128 / 4, 255 / 4, 000 / 4}
-#define Yellow       (LedColor){255 / 4, 255 / 4, 000 / 4}
-#define Orange       (LedColor){255 / 4, 128 / 4, 000 / 4}
+#define White        (LedColor){255 / 8, 255 / 8, 255 / 8}
+#define Red          (LedColor){255 / 8, 000 / 8, 000 / 8}
+#define Rose         (LedColor){255 / 8, 000 / 8, 128 / 8}
+#define Magenta      (LedColor){255 / 8, 000 / 8, 255 / 8}
+#define Violet       (LedColor){128 / 8, 000 / 8, 255 / 8}
+#define Blue         (LedColor){000 / 8, 000 / 8, 255 / 8}
+#define Azure        (LedColor){000 / 8, 128 / 8, 255 / 8}
+#define Cyan         (LedColor){000 / 8, 255 / 8, 255 / 8}
+#define Spring_Green (LedColor){000 / 8, 255 / 8, 128 / 8}
+#define Green        (LedColor){000 / 8, 255 / 8, 000 / 8}
+#define Chartreuse   (LedColor){128 / 8, 255 / 8, 000 / 8}
+#define Yellow       (LedColor){255 / 8, 255 / 8, 000 / 8}
+#define Orange       (LedColor){255 / 8, 128 / 8, 000 / 8}
 
 void leds_set_rgb(int id, uint8_t r, uint8_t g, uint8_t b);
 void leds_set_color(int id, LedColor rgb);
@@ -74,3 +74,8 @@ void screen_set_pixel (int x, int y, bool set);
 void screen_draw_line(int x0, int y0, int x1, int y1, bool set);
 void screen_printc(int x, int y, char c);
 void screen_print(int x, int y, const char *str);
+
+typedef void (*midi_in_cb_t)(uint32_t msg);
+
+void midi_init(midi_in_cb_t cb);
+

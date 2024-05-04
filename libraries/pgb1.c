@@ -8,6 +8,7 @@
 #include "hardware/spi.h"
 #include "ws2812.pio.h"
 #include "pgb1.h"
+#include "midi_utils.h"
 
 #define LED_PIO_SM 0
 #define LED_PIO pio0
@@ -331,4 +332,39 @@ void screen_print(int x, int y, const char *str) {
     for (const char *c = str; *c != 0; c++, dx += 6) {
         screen_printc(x + dx, y, *c);
     }
+}
+
+#define MIDI_UART uart1
+#define MIDI_IRQ UART1_IRQ
+#define MIDI_OUT_PIN 8
+#define MIDI_IN_PIN 9
+#define MIDI_GPIO_FUNC GPIO_FUNC_UART
+static midi_in_cb_t midi_in_user_cb = NULL;
+
+static midi_decoder pgb1_midi_decoder;
+
+void on_uart_rx() {
+    while (uart_is_readable(MIDI_UART)) {
+        uint8_t ch = uart_getc(MIDI_UART);
+        uint32_t msg = midi_decoder_push(&pgb1_midi_decoder, ch);
+        if (msg != 0 && midi_in_user_cb != NULL) {
+            midi_in_user_cb(msg);
+        }
+    }
+}
+
+void midi_init(midi_in_cb_t cb) {
+
+    uart_init(MIDI_UART, 31250);
+    gpio_set_function(MIDI_IN_PIN, MIDI_GPIO_FUNC);
+    gpio_set_function(MIDI_OUT_PIN, MIDI_GPIO_FUNC);
+    uart_set_format(MIDI_UART, 8, 1, UART_PARITY_NONE);
+    uart_set_fifo_enabled(MIDI_UART, true);
+
+    irq_set_exclusive_handler(MIDI_IRQ, on_uart_rx);
+    irq_set_enabled(MIDI_IRQ, true);
+    uart_set_irq_enables(MIDI_UART, true, false);
+
+    midi_decoder_init(&pgb1_midi_decoder);
+    midi_in_user_cb = cb;
 }

@@ -95,6 +95,11 @@ void send_CC(uint8_t chan, uint8_t controller, uint8_t val) {
     send_MIDI(msg);
 }
 
+void midi_in_cb(uint32_t msg) {
+    /* Just send the MIDI message to core1... */
+    send_MIDI(msg);
+}
+
 synth_param selected_param = Timbre;
 uint8_t param_value[PARAM_COUNT] = {6, 0, 6, 0, 0, 0, 6, 10};
 
@@ -141,6 +146,7 @@ int main(void) {
         send_buffer_id(i);
     }
 
+    midi_init(midi_in_cb);
 
     leds_clear();
     leds_set_color(0, Spring_Green); // Shape

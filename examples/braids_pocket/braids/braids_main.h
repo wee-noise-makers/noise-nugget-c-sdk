@@ -8,7 +8,7 @@
 
 EXTERNC void braids_main(void);
 
-#define BITS_PER_SAMPLE        10
+#define BITS_PER_SAMPLE        12
 #define SAMPLE_BITS_TO_DISCARD (16- BITS_PER_SAMPLE)
 #define MAX_MIDI_VAL (15)
 

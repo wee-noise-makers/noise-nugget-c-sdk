@@ -6,6 +6,7 @@ pico_generate_pio_header(noise_nugget ${CMAKE_CURRENT_LIST_DIR}/duplex_i2s.pio)
 target_sources(noise_nugget INTERFACE
   ${CMAKE_CURRENT_LIST_DIR}/noise_nugget.c
   ${CMAKE_CURRENT_LIST_DIR}/pgb1.c
+  ${CMAKE_CURRENT_LIST_DIR}/midi_utils.c
 )
 
 set(NOISE_NUGGET_LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/noise_nugget_memmap.ld)
