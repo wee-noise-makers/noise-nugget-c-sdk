@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024 Fabien Chouteau @ Wee Noise Makers
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #include "midi_utils.h"
 
 void midi_decoder_init(midi_decoder *dec) {
@@ -39,6 +45,7 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
         const uint8_t sub = (byte >> 0) & 0b1111;
 
         switch (cmd) {
+
         case Note_Off:
         case Note_On:
         case Aftertouch:
@@ -57,8 +64,10 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
                 dec->index = 1;
                 dec->expect_data = true;
             break;
+
         case Sys:
             switch (sub) {
+
             case Exclusive:
             case End_Exclusive:
                 /* Ignore SysEx start and stop, we do not support those
@@ -71,12 +80,14 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
                 dec->index = 1;
                 dec->expect_data = true;
                 break;
+
             case Song_Select:
             case Bus_Select:
                 dec->msg = byte;
                 dec->count = 2 - 1;
                 dec->index = 1;
                 dec->expect_data = true;
+
             case Tune_Request:
             case Timming_Tick:
             case Start_Song:
@@ -90,11 +101,13 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
                 dec->expect_data = false;
                 return byte;
                 break;
+
             default:
                 /* Unknown/unsupported sys message */
                 break;
             }
             break;
+
         default:
             /* Unknown/unsupported message */
             break;

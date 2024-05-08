@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024 Fabien Chouteau @ Wee Noise Makers
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #include <string.h>
 #include <stdlib.h>
 #include "pico/stdlib.h"
@@ -81,7 +87,7 @@ bool raising(uint32_t key){
 }
 
 int leds_dma_chan = -1; // init with invalid DMA channel id
-uint32_t leds_framebuffer[NUM_LEDS] = {0};
+uint32_t leds_framebuffer[PGB1_LEDS_COUNT] = {0};
 
 void leds_init(void) {
     uint offset = pio_add_program(LED_PIO, &ws2812_program);
@@ -105,7 +111,7 @@ bool leds_update(void) {
 
     dma_channel_transfer_from_buffer_now(leds_dma_chan,
                                          leds_framebuffer,
-                                         NUM_LEDS);
+                                         PGB1_LEDS_COUNT);
     return true;
 
 }
@@ -115,7 +121,7 @@ void leds_clear(void) {
 }
 
 void leds_set_rgb(int id, uint8_t r, uint8_t g, uint8_t b) {
-    if (id >= 0 && id < NUM_LEDS) {
+    if (id >= 0 && id < PGB1_LEDS_COUNT) {
         leds_framebuffer[id] = ((uint32_t) (r) << 16) |
             ((uint32_t) (g) << 24) |
             ((uint32_t) (b) << 8);

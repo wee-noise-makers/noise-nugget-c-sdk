@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2024 Fabien Chouteau @ Wee Noise Makers
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 #include "pico/stdlib.h"
 #include "hardware/clocks.h"
 #include "hardware/gpio.h"

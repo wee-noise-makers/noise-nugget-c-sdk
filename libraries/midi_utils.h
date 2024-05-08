@@ -1,3 +1,14 @@
+/*
+ * Copyright (c) 2024 Fabien Chouteau @ Wee Noise Makers
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+/**
+ * @file midi_utils.h
+ * @brief MIDI messages decoder.
+ */
+
 #pragma once
 #include <stdbool.h>
 #include <unistd.h>
