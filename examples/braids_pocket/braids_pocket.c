@@ -44,7 +44,6 @@ void send_buffer_id(uint8_t id) {
     multicore_fifo_push_blocking(data);
 }
 
-
 uint32_t audio_buffer_tmp[AUDIO_BUFFER_CNT][AUDIO_BUFFER_LEN] = {0};
 int playing_buffer_id = -1;
 
@@ -135,6 +134,15 @@ int main(void) {
     if (!audio_init(44100, audio_out_cb, NULL)) {
         printf("PGB-1 audio init failed");
     }
+    if (!set_hp_volume(1.0, 1.0)) {
+        printf("PGB-1 HP volume failed");
+    }
+    // if (!enable_speakers(true, false, 3)) {
+    //     printf("PGB-1 speaker init failed");
+    // }
+    // if (!set_line_out_volume(1.0, 1.0, 0.0, 0.0)) {
+    //     printf("PGB-1 line out volume failed");
+    // }
 
     /* Set synth parameters */
     for (int i = 0; i < PARAM_COUNT; i++) {

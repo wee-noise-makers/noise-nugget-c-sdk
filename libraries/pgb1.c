@@ -19,13 +19,13 @@
 #define LED_PIO_SM 0
 #define LED_PIO pio0
 #define IS_RGBW false
-#define WS2812_PIN 5
+#define WS2812_PIN 14
 
 #define KEY_COLUMN_CNT 5
 #define KEY_ROW_CNT 6
 
-const int key_column[KEY_COLUMN_CNT] = {18, 19, 26, 23, 29};
-const int key_row[KEY_ROW_CNT] = {20, 21, 22, 24, 25, 27};
+const int key_column[KEY_COLUMN_CNT] = {21, 22, 26, 23, 29};
+const int key_row[KEY_ROW_CNT] = {20, 18, 19, 24, 25, 27};
 
 static uint32_t _keyboard_state = 0;
 static uint32_t _keyboard_prev_state = 0;

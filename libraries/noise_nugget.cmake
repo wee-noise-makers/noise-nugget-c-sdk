@@ -32,3 +32,15 @@ function(noise_nugget_executable NAME SOURCES)
 
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${NAME}.uf2 DESTINATION .)
 endfunction()
+
+function(noise_nugget_lib NAME SOURCES)
+  add_library(
+    ${NAME}
+    STATIC
+    ${SOURCES}
+    ${ARGN}
+  )
+
+  # Pull in pico libraries that we need
+  target_link_libraries(${NAME} noise_nugget)
+endfunction()
