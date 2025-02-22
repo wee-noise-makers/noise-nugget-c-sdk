@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['keyboard_5finit_70',['keyboard_init',['../pgb1_8h.html#a5aae8263abc1dec4671638e7ed4af681',1,'pgb1.c']]],
-  ['keyboard_5fscan_71',['keyboard_scan',['../pgb1_8h.html#ad28cddee399e4f8e5a125e459325dc90',1,'pgb1.c']]]
+  ['falling_0',['falling',['../pgb1_8h.html#a39c09eeb4641e27799e77cc12549eff6',1,'pgb1.c']]]
 ];

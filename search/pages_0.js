@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['noise_2dnugget_2dc_2dsdk_125',['noise-nugget-c-sdk',['../index.html',1,'']]]
+  ['c_20sdk_0',['noise-nugget-c-sdk',['../index.html',1,'']]]
 ];

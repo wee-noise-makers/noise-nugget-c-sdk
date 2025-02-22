@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['noise_2dnugget_2dc_2dsdk_49',['noise-nugget-c-sdk',['../index.html',1,'']]],
-  ['noise_5fnugget_2eh_50',['noise_nugget.h',['../noise__nugget_8h.html',1,'']]]
+  ['g_0',['g',['../structLedColor.html#a7865e7ea907b705cc4eff661595e4829',1,'LedColor']]],
+  ['gcc_20cross_20compiler_1',['Install CMake, and GCC cross compiler',['../index.html#autotoc_md4',1,'']]]
 ];

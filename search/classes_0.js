@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['ledcolor_63',['LedColor',['../structLedColor.html',1,'']]]
+  ['clock_5fcfg_0',['clock_cfg',['../structclock__cfg.html',1,'']]]
 ];

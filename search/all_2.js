@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['falling_3',['falling',['../pgb1_8h.html#a39c09eeb4641e27799e77cc12549eff6',1,'pgb1.c']]]
+  ['b_0',['b',['../structLedColor.html#a3e9a3d5146e0fd245198bbe15736b9c2',1,'LedColor']]],
+  ['build_1',['Build',['../index.html#autotoc_md7',1,'']]],
+  ['building_20and_20trying_20the_20example_20project_2',['Building and trying the example project',['../index.html#autotoc_md2',1,'']]]
 ];

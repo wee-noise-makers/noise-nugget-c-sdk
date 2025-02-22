@@ -1,9 +1,7 @@
 var searchData=
 [
-  ['ledcolor_37',['LedColor',['../structLedColor.html',1,'']]],
-  ['leds_5fclear_38',['leds_clear',['../pgb1_8h.html#a9dfeaeed4de5894bee04fd8e43b4a198',1,'pgb1.c']]],
-  ['leds_5finit_39',['leds_init',['../pgb1_8h.html#a67cfc3137a465e560792490e81365254',1,'pgb1.c']]],
-  ['leds_5fset_5fcolor_40',['leds_set_color',['../pgb1_8h.html#a759d71bab90a180b4339225f691375e7',1,'pgb1.c']]],
-  ['leds_5fset_5frgb_41',['leds_set_rgb',['../pgb1_8h.html#aeb13f97d91fc21d100dd2df75679dc30',1,'pgb1.c']]],
-  ['leds_5fupdate_42',['leds_update',['../pgb1_8h.html#a4d46007048177395b91f6a2139897517',1,'pgb1.c']]]
+  ['enable_5fline_5fout_0',['enable_line_out',['../noise__nugget_8h.html#aa4011d3345799842ee2b85e74848fd7b',1,'noise_nugget.c']]],
+  ['enable_5fmic_5fbias_1',['enable_mic_bias',['../noise__nugget_8h.html#a65583ff64671bec06505d753b9a3f92f',1,'noise_nugget.c']]],
+  ['enable_5fspeakers_2',['enable_speakers',['../noise__nugget_8h.html#aa1b6d46820f6afc14c05b83ee5936eb0',1,'noise_nugget.c']]],
+  ['example_20project_3',['Building and trying the example project',['../index.html#autotoc_md2',1,'']]]
 ];
