@@ -11,17 +11,21 @@
 
 #pragma once
 #include <stdbool.h>
-#include <unistd.h>
+#include <stdint.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef enum midi_cmd {
     Note_Off             = 0x8,
-    Note_On              = 0x9, 
-    Aftertouch           = 0xA, 
-    Continous_Controller = 0xB, 
-    Patch_Change         = 0xC, 
-    Channel_Pressure     = 0xD, 
-    Pitch_Bend           = 0xE, 
-    Sys                  = 0xF, 
+    Note_On              = 0x9,
+    Aftertouch           = 0xA,
+    Continous_Controller = 0xB,
+    Patch_Change         = 0xC,
+    Channel_Pressure     = 0xD,
+    Pitch_Bend           = 0xE,
+    Sys                  = 0xF,
 } midi_cmd;
 
 typedef enum midi_sys_cmd {
@@ -59,3 +63,7 @@ void midi_decoder_init(midi_decoder *dec);
  * \return decoded midi message or 0 for no message
  */
 uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte);
+
+#ifdef __cplusplus
+}
+#endif

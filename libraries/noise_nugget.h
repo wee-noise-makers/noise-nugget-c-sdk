@@ -17,6 +17,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @typedef audio_cb_t
  * @brief Defines a callback type for audio processing.
@@ -123,7 +127,7 @@ bool set_hp_volume(float left, float right);
  * @brief Set line input boost
  *
  * @details Both left and right channels of each lines 1 and 3 can be routed to
- * left and/or right line ADC channels. This can used to produce stereo sound 
+ * left and/or right line ADC channels. This can used to produce stereo sound
  * from a single microphone.
  *
  * @param line Line identifier between 1 and 3
@@ -145,3 +149,7 @@ bool set_line_in_boost (uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uin
  * @return Returns true on success, false otherwise.
  */
 bool enable_mic_bias (void);
+
+#ifdef __cplusplus
+}
+#endif

@@ -14,6 +14,10 @@
 #pragma once
 #include "pico/stdlib.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Keyboard key definitions
 #define K_TRACK   0x10000000 ///< Key code for TRACK button.
 #define K_STEP    0x08000000 ///< Key code for STEP button.
@@ -206,3 +210,6 @@ typedef void (*midi_in_cb_t)(uint32_t msg);
  */
 void midi_init(midi_in_cb_t cb);
 
+#ifdef __cplusplus
+}
+#endif

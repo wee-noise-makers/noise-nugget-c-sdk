@@ -742,7 +742,7 @@ bool enable_line_out (bool left, bool right) {
         success = success && power_on(LINE_OUT_R);
         success = success && route(DAC_R1, LINE_OUT_L);
         success = success && route(DAC_R1, LINE_OUT_R);
-        success = success && unmute(LINE_OUT_L);
+        success = success && unmute(LINE_OUT_R);
     } else {
         success = success && power_off(LINE_OUT_R);
         success = success && unroute(DAC_R1, LINE_OUT_L);

@@ -15,7 +15,7 @@ void midi_decoder_init(midi_decoder *dec) {
 
 uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
     const bool is_status = (byte & 0b10000000) != 0;
-    
+
     if (dec->expect_data) {
         if (is_status || dec->count == 0) {
             /* There is an issue with the current message, ignore it */
@@ -73,7 +73,7 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
                 /* Ignore SysEx start and stop, we do not support those
                    messages */
                 break;
-                
+
             case Song_Position:
                 dec->msg = byte;
                 dec->count = 3 - 1;
@@ -87,6 +87,7 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
                 dec->count = 2 - 1;
                 dec->index = 1;
                 dec->expect_data = true;
+                break;
 
             case Tune_Request:
             case Timming_Tick:
@@ -111,7 +112,8 @@ uint32_t midi_decoder_push(midi_decoder *dec, uint8_t byte) {
         default:
             /* Unknown/unsupported message */
             break;
-            
+
         }
     }
+    return 0;
 }
