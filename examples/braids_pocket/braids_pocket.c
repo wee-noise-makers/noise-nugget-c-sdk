@@ -131,16 +131,16 @@ int main(void) {
     keyboard_init();
     leds_init();
     screen_init();
-    if (!audio_init(44100, audio_out_cb, NULL)) {
+    if (!nn_audio_init(44100, audio_out_cb, NULL)) {
         printf("PGB-1 audio init failed");
     }
-    if (!set_hp_volume(1.0, 1.0)) {
+    if (!nn_set_hp_volume(1.0, 1.0)) {
         printf("PGB-1 HP volume failed");
     }
-    // if (!enable_speakers(true, false, 3)) {
+    // if (!nn_enable_speakers(true, false, 3)) {
     //     printf("PGB-1 speaker init failed");
     // }
-    // if (!set_line_out_volume(1.0, 1.0, 0.0, 0.0)) {
+    // if (!nn_set_line_out_volume(1.0, 1.0, 0.0, 0.0)) {
     //     printf("PGB-1 line out volume failed");
     // }
 

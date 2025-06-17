@@ -50,17 +50,17 @@ static uint8_t g_io_exp_output_reg_state = IO_EXP_OUTPUT_REG_INIT;
 static bool g_io_exp_init = false;
 static bool g_i2c_init = false;
 
-int i2s_out_dma_chan = -1; // init with invalid DMA channel id
-int i2s_in_dma_chan = -1; // init with invalid DMA channel id
+static int i2s_out_dma_chan = -1; // init with invalid DMA channel id
+static int i2s_in_dma_chan = -1; // init with invalid DMA channel id
 
 #define DUMMY_AUDIO_BUFFER_SIZE 256
 const uint32_t zeroes_audio_buffer[DUMMY_AUDIO_BUFFER_SIZE] = {0x0};
-uint32_t dev_null_audio_buffer[DUMMY_AUDIO_BUFFER_SIZE] = {0x0};
+static uint32_t dev_null_audio_buffer[DUMMY_AUDIO_BUFFER_SIZE] = {0x0};
 
-audio_cb_t user_audio_input_callback = NULL;
-audio_cb_t user_audio_output_callback = NULL;
+static audio_cb_t user_audio_input_callback = NULL;
+static audio_cb_t user_audio_output_callback = NULL;
 
-void dma_out_handler() {
+static void dma_out_handler() {
     uint32_t *buffer = NULL;
     uint32_t point_count = 0;
 
@@ -83,7 +83,7 @@ void dma_out_handler() {
                                          point_count);
 }
 
-void dma_in_handler() {
+static void dma_in_handler() {
     uint32_t *buffer = NULL;
     uint32_t point_count = 0;
 
@@ -106,7 +106,7 @@ void dma_in_handler() {
                                        point_count);
 }
 
-void setup_audio_pin(int pin, bool out) {
+static void setup_audio_pin(int pin, bool out) {
     gpio_init(pin);
     gpio_set_dir(pin, out ? GPIO_OUT : GPIO_IN);
     gpio_pull_up(pin);
@@ -114,7 +114,7 @@ void setup_audio_pin(int pin, bool out) {
     gpio_set_function(pin, I2S_PIN_FUNC);
 }
 
-bool init_i2s(int sample_rate) {
+static bool init_i2s(int sample_rate) {
 
     // PIO I2S Pins
 
@@ -215,14 +215,14 @@ bool nn_i2c_init(void){
     return true;
 }
 
-bool tca6408_write_register(uint8_t reg, uint8_t value){
+static bool tca6408_write_register(uint8_t reg, uint8_t value){
     uint8_t buf[2] = {reg, value};
 
     const int result = i2c_write_blocking(I2C_PORT, TCA6408_ADDR, buf, 2, false);
     return result == 2;
 }
 
-bool io_exp_init(void){
+static bool io_exp_init(void){
     bool success = true;
 
     if (g_io_exp_init) {
@@ -239,7 +239,7 @@ bool io_exp_init(void){
     return success;
 }
 
-bool io_exp_set_out(uint8_t new_state) {
+static bool io_exp_set_out(uint8_t new_state) {
 
     io_exp_init();
 
@@ -251,7 +251,7 @@ bool io_exp_set_out(uint8_t new_state) {
     }
 }
 
-bool io_exp_enable_speakers(bool left, bool right) {
+static bool io_exp_enable_speakers(bool left, bool right) {
     uint8_t new_state = g_io_exp_output_reg_state;
 
     if (left) {
@@ -269,7 +269,7 @@ bool io_exp_enable_speakers(bool left, bool right) {
     return io_exp_set_out(new_state);
 }
 
-bool set_speaker_gain(bool G0, bool G1) {
+static bool set_speaker_gain(bool G0, bool G1) {
     uint8_t new_state = g_io_exp_output_reg_state;
 
     if (G0) {
@@ -287,7 +287,7 @@ bool set_speaker_gain(bool G0, bool G1) {
     return io_exp_set_out(new_state);
 }
 
-bool enable_codec(void) {
+static bool enable_codec(void) {
     const uint8_t new_state =
         g_io_exp_output_reg_state | IO_EXP_DAC_Not_Reset_Mask;
 
@@ -413,7 +413,7 @@ typedef struct clock_cfg {
     uint8_t p;
 } clock_cfg;
 
-bool aic3105_write_reg (uint8_t reg, uint8_t value) {
+static bool aic3105_write_reg (uint8_t reg, uint8_t value) {
     uint8_t buf[2] = {reg, value};
 
     const int result = i2c_write_blocking(I2C_PORT, AIC3105_ADDR, buf, 2, false);
@@ -426,7 +426,7 @@ bool aic3105_write_reg (uint8_t reg, uint8_t value) {
     }
 }
 
-bool aic3105_write_bit(uint8_t reg, uint8_t pos, uint8_t value) {
+static bool aic3105_write_bit(uint8_t reg, uint8_t pos, uint8_t value) {
     uint8_t current = g_aic3105_reg_local_copy[reg];
     const uint8_t mask = 1 << pos;
 
@@ -439,7 +439,7 @@ bool aic3105_write_bit(uint8_t reg, uint8_t pos, uint8_t value) {
     return aic3105_write_reg(reg, current);
 }
 
-bool aic3105_write_multi(uint8_t reg, uint8_t msb, uint8_t lsb, uint8_t value) {
+static bool aic3105_write_multi(uint8_t reg, uint8_t msb, uint8_t lsb, uint8_t value) {
     uint8_t current = g_aic3105_reg_local_copy[reg];
 
     const uint8_t lsb_mask = ~((1 << lsb) - 1);
@@ -452,7 +452,7 @@ bool aic3105_write_multi(uint8_t reg, uint8_t msb, uint8_t lsb, uint8_t value) {
     return aic3105_write_reg(reg, current);
 }
 
-uint8_t volume_convert(float volume, uint8_t min, uint8_t max, uint8_t mute_value) {
+static uint8_t volume_convert(float volume, uint8_t min, uint8_t max, uint8_t mute_value) {
     if (volume == 0.0) {
         return mute_value;
     } else if (volume > 1.0) {
@@ -483,7 +483,7 @@ typedef enum out_mixer_sink {
    HP_L_OUT, HP_L_COM, HP_R_OUT, HP_R_COM, LINE_OUT_L, LINE_OUT_R
 } out_mixer_sink;
 
-uint8_t sink_base_register(out_mixer_sink sink) {
+static uint8_t sink_base_register(out_mixer_sink sink) {
     switch (sink)
     {
     case HP_L_OUT:
@@ -510,7 +510,7 @@ uint8_t sink_base_register(out_mixer_sink sink) {
     }
 }
 
-uint8_t source_register_offset(out_mixer_source source) {
+static uint8_t source_register_offset(out_mixer_source source) {
     switch (source)
     {
     case LINE2_L:
@@ -537,50 +537,50 @@ uint8_t source_register_offset(out_mixer_source source) {
     }
 }
 
-bool power_on(out_mixer_sink sink) {
+static bool power_on(out_mixer_sink sink) {
     const uint8_t reg = sink_base_register(sink) + 6;
 
     return aic3105_write_bit(reg, 0, 1);
 }
 
-bool power_off(out_mixer_sink sink) {
+static bool power_off(out_mixer_sink sink) {
     const uint8_t reg = sink_base_register(sink) + 6;
 
     return aic3105_write_bit(reg, 0, 0);
 }
 
-bool mute(out_mixer_sink sink) {
+static bool mute(out_mixer_sink sink) {
     const uint8_t reg = sink_base_register(sink) + 6;
 
     return aic3105_write_bit(reg, 3, 0);
 }
 
-bool unmute(out_mixer_sink sink) {
+static bool unmute(out_mixer_sink sink) {
     const uint8_t reg = sink_base_register(sink) + 6;
 
     return aic3105_write_bit(reg, 3, 1);
 }
 
-bool route(out_mixer_source source, out_mixer_sink sink) {
+static bool route(out_mixer_source source, out_mixer_sink sink) {
     const uint8_t reg = sink_base_register(sink) + source_register_offset(source);
 
     return aic3105_write_bit(reg, 7, 1);
 }
 
-bool unroute(out_mixer_source source, out_mixer_sink sink) {
+static bool unroute(out_mixer_source source, out_mixer_sink sink) {
     const uint8_t reg = sink_base_register(sink) + source_register_offset(source);
 
     return aic3105_write_bit(reg, 7, 0);
 }
 
-bool set_volume(out_mixer_source source, out_mixer_sink sink, float volume) {
+static bool set_volume(out_mixer_source source, out_mixer_sink sink, float volume) {
     const uint8_t vol = OUTPUT_STAGE_VOLUME(volume);
     const uint8_t reg = sink_base_register(sink) + source_register_offset(source);
 
     return aic3105_write_multi(reg, 6, 0, vol);
 }
 
-bool init_aic3105(int sample_rate){
+static bool init_aic3105(int sample_rate){
     bool success = true;
     clock_cfg cfg;
 
@@ -723,7 +723,7 @@ bool init_aic3105(int sample_rate){
     return success;
 }
 
-bool enable_line_out (bool left, bool right) {
+bool nn_enable_line_out (bool left, bool right) {
     bool success = true;
 
     if (left) {
@@ -753,7 +753,7 @@ bool enable_line_out (bool left, bool right) {
     return success;
 }
 
-bool enable_speakers(bool left, bool right, uint8_t gain) {
+bool nn_enable_speakers(bool left, bool right, uint8_t gain) {
     bool success = false;
     switch (gain)
     {
@@ -773,12 +773,12 @@ bool enable_speakers(bool left, bool right, uint8_t gain) {
         success = set_speaker_gain(false, false);
     }
 
-    success = success && enable_line_out(left, right);
+    success = success && nn_enable_line_out(left, right);
     success = success && io_exp_enable_speakers(left, right);
     return success;
 }
 
-bool set_adc_volume (float left, float right) {
+bool nn_set_adc_volume (float left, float right) {
     bool success = true;
 
     if (left == 0) {
@@ -795,11 +795,11 @@ bool set_adc_volume (float left, float right) {
     return success;
 }
 
-bool set_hp_volume (float left, float right) {
+bool nn_set_hp_volume(float left, float right) {
     return set_volume(DAC_L1, HP_L_OUT, left) && set_volume(DAC_R1, HP_R_OUT, right);
 }
 
-bool set_line_out_volume(float L2L, float L2R, float R2L, float R2R) {
+bool nn_set_line_out_volume(float L2L, float L2R, float R2L, float R2R) {
     bool success = set_volume(DAC_L1, LINE_OUT_L, L2L);
     success = success && set_volume(DAC_L1, LINE_OUT_R, L2R);
 
@@ -809,7 +809,7 @@ bool set_line_out_volume(float L2L, float L2R, float R2L, float R2R) {
     return success;
 }
 
-uint8_t boost_to_reg (uint8_t b) {
+static uint8_t boost_to_reg (uint8_t b) {
     if (b >= 9) {
         return 0b0000;
     } else if (b == 0) {
@@ -819,7 +819,7 @@ uint8_t boost_to_reg (uint8_t b) {
     }
 }
 
-bool set_line_in_boost (uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uint8_t R2R) {
+bool nn_set_line_in_boost(uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uint8_t R2R) {
     bool success = true;
 
     const uint8_t L2LB = boost_to_reg(L2L);
@@ -853,13 +853,13 @@ bool set_line_in_boost (uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uin
     return success;
 }
 
-bool enable_mic_bias (void) {
+bool nn_enable_mic_bias(void) {
     return aic3105_write_multi(MICBIAS_CTRL, 7, 6, 0b10);
 }
 
-bool audio_init(int sample_rate,
-                audio_cb_t output_callback,
-                audio_cb_t input_callback)
+bool nn_audio_init(int sample_rate,
+                   audio_cb_t output_callback,
+                   audio_cb_t input_callback)
 {
     bool success = true;
 

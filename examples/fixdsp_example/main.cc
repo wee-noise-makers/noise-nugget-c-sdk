@@ -324,7 +324,7 @@ void demo_on_uart_rx() {
         uint32_t msg = midi_decoder_push(&demo_midi_decoder, ch);
         if (msg != 0) {
             printf("MIDI MSG: 0x%x\n", msg);
-            send_MIDI(msg);
+            nn_ms_send_MIDI(msg);
         }
     }
 }
@@ -373,16 +373,15 @@ int main(void)
     gpio_set_dir(ENV_HOLD_SWITCH_PIN, GPIO_IN);
     gpio_pull_up(ENV_HOLD_SWITCH_PIN);
 
-    start_MIDI_Synth(FIXDSP_SAMPLE_RATE,
-                     render_audio, note_on, note_off, control_change);
+    nn_ms_start(FIXDSP_SAMPLE_RATE,
+               render_audio, note_on, note_off, control_change);
 
-    if (!set_hp_volume(0.7, 0.7)) {
+    if (!nn_set_hp_volume(0.7, 0.7)) {
         printf("HP volume failed");
     }
 
-    enable_speakers(true, true, 0);
-    // enable_line_out(true, true);
-    set_line_out_volume(0.0, 0.0, 0.0, 0.0);
+    nn_enable_speakers(true, true, 0);
+    nn_set_line_out_volume(0.0, 0.0, 0.0, 0.0);
 
     //send_note_on(0, 44, 127);
     while (1) {
@@ -390,7 +389,7 @@ int main(void)
             const uint8_t new_value = read_adc(i);
             if (new_value != params[i]) {
                 params[i] = new_value;
-                send_CC(0, i + 1, new_value);
+                nn_ms_send_CC(0, i + 1, new_value);
             }
         }
 
@@ -409,7 +408,7 @@ int main(void)
                         speaker_volume += 0.1;
                     }
                     printf("Speaker volume: %f\n", speaker_volume);
-                    set_line_out_volume(speaker_volume, 0.0, 0.0, speaker_volume);
+                    nn_set_line_out_volume(speaker_volume, 0.0, 0.0, speaker_volume);
                     break;
 
                 case BTN_VOL_DOWN:
@@ -417,7 +416,7 @@ int main(void)
                         speaker_volume -= 0.1;
                     }
                     printf("Speaker volume: %f\n", speaker_volume);
-                    set_line_out_volume(speaker_volume, 0.0, 0.0, speaker_volume);
+                    nn_set_line_out_volume(speaker_volume, 0.0, 0.0, speaker_volume);
                     break;
 
                 case BTN_ENG_UP:

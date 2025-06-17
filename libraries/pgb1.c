@@ -162,10 +162,10 @@ void leds_set_color(int id, LedColor rgb) {
 #define MOSI_PIN    11
 #define SCREEN_FRAMEBUFFER_SIZE (WIDTH * HEIGHT) / 8
 
-int screen_dma_chan = -1; // init with invalid DMA channel id
-uint8_t screen_framebuffer[SCREEN_FRAMEBUFFER_SIZE] = {0};
+static int screen_dma_chan = -1; // init with invalid DMA channel id
+static uint8_t screen_framebuffer[SCREEN_FRAMEBUFFER_SIZE] = {0};
 
-uint8_t init_cmds[] =
+static uint8_t init_cmds[] =
 {SET_DISP, // off
  SET_MEM_ADDR, // address setting
  0x00, // Horizontal Addressing Mode
@@ -199,7 +199,7 @@ uint8_t init_cmds[] =
  0x14,
  SET_DISP | 0x01};  // display on
 
-void screen_write_cmd(uint8_t cmd) {
+static void screen_write_cmd(uint8_t cmd) {
     gpio_put(DC_PIN, false);
     spi_write_blocking(SCREEN_SPI, &cmd, 1);
 }
@@ -266,7 +266,7 @@ bool screen_update(void) {
     return true;
 }
 
-void screen_set_pixel (int x, int y, bool set) {
+void screen_set_pixel(int x, int y, bool set) {
     if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
         int index = x + (y / 8) * WIDTH;
         uint8_t *byte = &screen_framebuffer[index];
@@ -311,7 +311,7 @@ const uint8_t font5x7[] =
  192, 7, 23, 179, 3, 206, 69, 159, 92, 220, 113, 59, 183, 65, 188, 241, 131, 31, 98, 12, 113, 71, 23, 115, 139,
  202, 69, 255, 58, 188, 105, 87, 195, 193, 220, 249, 251};
 
-uint8_t get_bit(const uint8_t *bitmap, int bit_index) {
+static uint8_t get_bit(const uint8_t *bitmap, int bit_index) {
     int byte_index = bit_index / 8;
     int bit_position = bit_index % 8;
 
@@ -349,7 +349,7 @@ static midi_in_cb_t midi_in_user_cb = NULL;
 
 static midi_decoder pgb1_midi_decoder;
 
-void on_uart_rx() {
+static void on_uart_rx() {
     while (uart_is_readable(MIDI_UART)) {
         uint8_t ch = uart_getc(MIDI_UART);
         uint32_t msg = midi_decoder_push(&pgb1_midi_decoder, ch);

@@ -52,8 +52,8 @@ typedef void (*audio_cb_t)(uint32_t **buffer, uint32_t *stereo_point_count);
  * rate and sets up the necessary callback functions for audio data input and
  * output.
  *
- * @param sample_rate The audio sample rate to be configured. Typical values
- *                    might include 44100 or 21500 Hz.
+ * @param sample_rate The audio sample rate to be configured (8000, 16000,
+ *                    22050, 32000, 44100, or 48000).
  * @param output_callback The callback function to be invoked when an audio
  *                        output buffer is required.
  * @param input_callback The callback function to be invoked when an audio input
@@ -62,9 +62,9 @@ typedef void (*audio_cb_t)(uint32_t **buffer, uint32_t *stereo_point_count);
  * @return Returns true if the audio system was successfully initialized, false
  *         otherwise.
  */
-bool audio_init(int sample_rate,
-                audio_cb_t output_callback,
-                audio_cb_t input_callback);
+bool nn_audio_init(int sample_rate,
+                   audio_cb_t output_callback,
+                   audio_cb_t input_callback);
 
 /**
  * @brief Enable line level output
@@ -74,7 +74,7 @@ bool audio_init(int sample_rate,
  *
  * @return Returns true on success, false otherwise.
  */
-bool enable_line_out(bool left, bool right);
+bool nn_enable_line_out(bool left, bool right);
 
 /**
  * @brief Enable speaker amp
@@ -85,7 +85,7 @@ bool enable_line_out(bool left, bool right);
  *
  * @return Returns true on success, false otherwise.
  */
-bool enable_speakers (bool left, bool right, uint8_t gain);
+bool nn_enable_speakers(bool left, bool right, uint8_t gain);
 
 /**
  * @brief Set volume for line output (and speakers)
@@ -101,7 +101,7 @@ bool enable_speakers (bool left, bool right, uint8_t gain);
  *
  * @return Returns true on success, false otherwise.
  */
-bool set_line_out_volume(float L2L, float L2R, float R2L, float R2R);
+bool nn_set_line_out_volume(float L2L, float L2R, float R2L, float R2R);
 
 /**
  * @brief Set ADC (Analog to Digital Converter) volume
@@ -111,7 +111,7 @@ bool set_line_out_volume(float L2L, float L2R, float R2L, float R2R);
  *
  * @return Returns true on success, false otherwise.
  */
-bool set_adc_volume(float left, float right);
+bool nn_set_adc_volume(float left, float right);
 
 /**
  * @brief Set Headphone output volume
@@ -121,7 +121,7 @@ bool set_adc_volume(float left, float right);
  *
  * @return Returns true on success, false otherwise.
  */
-bool set_hp_volume(float left, float right);
+bool nn_set_hp_volume(float left, float right);
 
 /**
  * @brief Set line input boost
@@ -138,7 +138,7 @@ bool set_hp_volume(float left, float right);
  *
  * @return Returns true on success, false otherwise.
  */
-bool set_line_in_boost (uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uint8_t R2R);
+bool nn_set_line_in_boost(uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uint8_t R2R);
 
 /**
  * @brief Enable microphone bias
@@ -148,7 +148,7 @@ bool set_line_in_boost (uint8_t line, uint8_t L2L, uint8_t L2R, uint8_t R2L, uin
  *
  * @return Returns true on success, false otherwise.
  */
-bool enable_mic_bias (void);
+bool nn_enable_mic_bias(void);
 
 #ifdef __cplusplus
 }
