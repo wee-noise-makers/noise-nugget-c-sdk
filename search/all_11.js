@@ -10,9 +10,5 @@ var searchData=
   ['sdk_7',['noise-nugget-c-sdk',['../index.html',1,'']]],
   ['set_20up_20dependencies_8',['Set up dependencies',['../index.html#autotoc_md5',1,'']]],
   ['set_20up_20project_20directory_20and_20files_3a_9',['Set up project directory and files:',['../index.html#autotoc_md6',1,'']]],
-  ['set_5fadc_5fvolume_10',['set_adc_volume',['../noise__nugget_8h.html#adc6c89608e6c3b2e791d3f6c49266180',1,'noise_nugget.c']]],
-  ['set_5fhp_5fvolume_11',['set_hp_volume',['../noise__nugget_8h.html#a27dbf4733ee4b512dcf63d8a79675961',1,'noise_nugget.c']]],
-  ['set_5fline_5fin_5fboost_12',['set_line_in_boost',['../noise__nugget_8h.html#a2245789ec2bd572d57e9ac021805963c',1,'noise_nugget.c']]],
-  ['set_5fline_5fout_5fvolume_13',['set_line_out_volume',['../noise__nugget_8h.html#aa24b8d7e8d2ad7bf54c71417ecc5884b',1,'noise_nugget.c']]],
-  ['start_20your_20own_20project_14',['Quick-start your own project',['../index.html#autotoc_md3',1,'']]]
+  ['start_20your_20own_20project_10',['Quick-start your own project',['../index.html#autotoc_md3',1,'']]]
 ];
