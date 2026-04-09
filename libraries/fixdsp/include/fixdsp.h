@@ -125,6 +125,16 @@ namespace fixdsp {
       }
     }
 
+    inline int16_t clip_natural(int32_t a) {
+      if (a > std::numeric_limits<int16_t>::max()) {
+        return std::numeric_limits<int16_t>::max();
+      } else if (a < 0) {
+        return 0;
+      } else {
+        return static_cast<int16_t>(a);
+      }
+    }
+
     inline void addSat(MonoBuffer &a, const MonoBuffer &b) {
         auto a_p = a.getWritePointer(0);
         auto b_p = b.getReadPointer(0);
@@ -238,6 +248,22 @@ namespace fixdsp {
       int32_t a = Interpolate824(table_a, phase);
       int32_t b = Interpolate824(table_b, phase);
       return a + ((b - a) * static_cast<int32_t>(balance) >> 16);
+    }
+
+    inline void Crossfade(
+        const int16_t* table_a,
+        const int16_t* table_b,
+        const PhaseBuffer &phase,
+        uint16_t balance,
+        MonoBuffer &output) {
+
+      auto phase_p = phase.getReadPointer(0);
+      auto out_p = output.getWritePointer(0);
+      auto len = phase.getBufferLength();
+
+      for (int i = 0; i < len; i++) {
+        out_p[i] = Crossfade(table_a, table_b, phase_p[i], balance);
+      }
     }
 
     inline int16_t Crossfade(

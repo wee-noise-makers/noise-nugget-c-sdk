@@ -1,2 +1,3 @@
 add_subdirectory(braids_pocket)
 add_subdirectory(fixdsp_example)
+add_subdirectory(midi_music_box)
