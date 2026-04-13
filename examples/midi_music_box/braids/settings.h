@@ -32,7 +32,7 @@
 #include "stmlib.h"
 
 #define NBR_OF_OSCs 8
-#define NBR_OF_CHANs 1
+#define NBR_OF_CHANs 4
 
 namespace braids {
 

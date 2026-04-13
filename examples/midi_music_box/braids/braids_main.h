@@ -8,7 +8,7 @@
 
 EXTERNC void braids_main(void);
 
-#define BITS_PER_SAMPLE        12
+#define BITS_PER_SAMPLE        15
 #define SAMPLE_BITS_TO_DISCARD (16- BITS_PER_SAMPLE)
 #define MAX_MIDI_VAL (127)
 
@@ -56,6 +56,8 @@ static const char *param_name_short[PARAM_COUNT] =
     "Dy",
     "Vo"
 };
+
+static const uint8_t init_param_value[PARAM_COUNT] = {37, 70, 0, 70, 0, 1, 7, 70};
 
 #define SHAPE_COUNT 47
 

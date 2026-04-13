@@ -69,8 +69,8 @@ extern "C" void gui_update(void)
         mainView.event({GUIinput::Button_B});
     }
 
-    screen_print(0,42, std::to_string(captA.delta()).c_str());
-    screen_print(0, 50, std::to_string(captB.delta()).c_str());
+    // screen_print(0,42, std::to_string(captA.delta()).c_str());
+    // screen_print(0, 50, std::to_string(captB.delta()).c_str());
     // screen_print(0, 20, std::to_string(gpio_get(ENC_A_SW_PIN)).c_str());
     // screen_print(0, 30, std::to_string(gpio_get(ENC_B_SW_PIN)).c_str());
 

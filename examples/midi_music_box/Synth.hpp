@@ -10,13 +10,16 @@ class SynthControls {
     SynthControls(uint8_t chan)
       : chan_(chan)
     {
-        sync();
+        for (int i = 0; i < PARAM_COUNT; i++) {
+            param_value_[i] = init_param_value[i];
+        }
     }
 
     void sync(void) {
         /* Set synth parameters */
         for (int i = 0; i < PARAM_COUNT; i++) {
             sendCC(static_cast<synth_param>(i), param_value_[i]);
+            sleep_ms(10);
         }
     }
 
@@ -25,7 +28,7 @@ class SynthControls {
 
         if (param_value_[id] < param_max_value[id]) {
             param_value_[id]++;
-            sendCC(param, param_value_[id], true);
+            sendCC(param, param_value_[id], false);
         }
     }
 
@@ -34,7 +37,7 @@ class SynthControls {
 
         if (param_value_[id] > 0) {
             param_value_[id]--;
-            sendCC(param, param_value_[id], true);
+            sendCC(param, param_value_[id], false);
         }
     }
 
@@ -63,5 +66,5 @@ class SynthControls {
 
     private:
     uint8_t chan_;
-    uint8_t param_value_[PARAM_COUNT] = {0, 127 / 2, 0, 127 / 2, 0, 1, 6, 127};
+    uint8_t param_value_[PARAM_COUNT] = {37, 70, 0, 70, 0, 1, 7, 70};
 };

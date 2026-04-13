@@ -45,7 +45,7 @@ using namespace stmlib;
 
 #define MAX_PARAM (32767)
 
-#define POLY_OSCs (NBR_OF_OSCs - 0) // Number of oscillators for the poly chan
+#define POLY_OSCs (NBR_OF_OSCs - (NBR_OF_CHANs - 1)) // Number of oscillators for the poly chan
 
 const size_t kBlockSize = MAX_RENDER_BUFFER_SIZE;
 
@@ -89,6 +89,52 @@ volatile bool trigger_flag[NBR_OF_OSCs];
 //     }
 // }
 
+void set_CC(uint8_t chan, uint8_t cc, uint8_t val) {
+    if (chan < NBR_OF_CHANs) {
+            switch (static_cast<synth_param>(cc)) {
+            case synth_param::Shape:{
+                if (val <= SHAPE_COUNT) {
+                    const MacroOscillatorShape shape =
+                      static_cast<MacroOscillatorShape>(val);
+                    settings[chan].SetValue(SETTING_OSCILLATOR_SHAPE, shape);
+                }
+                break;
+            }
+            case synth_param::Timbre:{
+                cc_params[chan][0] = (int32_t)val * (MAX_PARAM / MAX_MIDI_VAL);
+                break;
+            }
+            case synth_param::AD_Timbre:{
+                settings[chan].SetValue(SETTING_AD_TIMBRE, val);
+                break;
+            }
+            case synth_param::Color:{
+                cc_params[chan][1] = (int32_t)val * (MAX_PARAM / MAX_MIDI_VAL);
+                break;
+            }
+            case synth_param::AD_Color:{
+                settings[chan].SetValue(SETTING_AD_COLOR, val);
+                break;
+            }
+            case synth_param::Attack:{
+                settings[chan].SetValue(SETTING_AD_ATTACK, val);
+                break;
+            }
+            case synth_param::Decay:{
+                settings[chan].SetValue(SETTING_AD_DECAY, val);
+                break;
+            }
+            case synth_param::Volume:{
+                volume[chan] = val * (MAX_PARAM / MAX_MIDI_VAL);
+                break;
+            }
+            default:{
+                break;
+            }
+        }
+    }
+
+}
 
 void Init() {
 
@@ -98,11 +144,26 @@ void Init() {
       ws[i].Init(42000 * (i + 1));
       fill(&audio_samples[i][0], &audio_samples[i][kBlockSize], 0);
       fill(&sync_samples[i][0], &sync_samples[i][kBlockSize], 0);
+
+
   }
 
-  for (int i = 0; i < NBR_OF_CHANs; i++){
-      settings[i].Init();
+  for (int chan = 0; chan < NBR_OF_CHANs; chan++){
+    settings[chan].Init();
+
+    for (int p = 0; p < PARAM_COUNT; p++) {
+      set_CC(chan, p, init_param_value[p]);
+    }
   }
+
+  settings[1].SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_KICK);
+  settings[2].SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_SNARE);
+
+  settings[3].SetValue(SETTING_OSCILLATOR_SHAPE, MACRO_OSC_SHAPE_CYMBAL);
+  settings[3].SetValue(SETTING_AD_ATTACK, 0);
+  settings[3].SetValue(SETTING_AD_DECAY, 3);
+  cc_params[3][0] = MAX_PARAM;
+  cc_params[3][1] = MAX_PARAM;
 }
 
 const uint16_t bit_reduction_masks[] = {
@@ -278,7 +339,7 @@ void braids_main(void) {
 
                     if (chan == 0) {
                         //  The first channel is polyphonic (round-robin)
-                        static uint8_t rr_next_osc = 0;
+                        static uint32_t rr_next_osc = 0;
 
                         osc_id = rr_next_osc;
                         rr_next_osc = (rr_next_osc + 1) % POLY_OSCs;
@@ -295,50 +356,8 @@ void braids_main(void) {
 
             }
             case 0b1011:{// Control change
-
-                if (chan < NBR_OF_CHANs) {
-                    switch (static_cast<synth_param>(key)) {
-                    case synth_param::Shape:{
-                        if (val <= SHAPE_COUNT) {
-                            const MacroOscillatorShape shape =
-                              static_cast<MacroOscillatorShape>(val);
-                            settings[chan].SetValue(SETTING_OSCILLATOR_SHAPE, shape);
-                        }
-                        break;
-                    }
-                    case synth_param::Timbre:{
-                        cc_params[chan][0] = (int32_t)val * (MAX_PARAM / MAX_MIDI_VAL);
-                        break;
-                    }
-                    case synth_param::AD_Timbre:{
-                        settings[chan].SetValue(SETTING_AD_TIMBRE, val);
-                        break;
-                    }
-                    case synth_param::Color:{
-                        cc_params[chan][1] = (int32_t)val * (MAX_PARAM / MAX_MIDI_VAL);
-                        break;
-                    }
-                    case synth_param::AD_Color:{
-                        settings[chan].SetValue(SETTING_AD_COLOR, val);
-                        break;
-                    }
-                    case synth_param::Attack:{
-                        settings[chan].SetValue(SETTING_AD_ATTACK, val);
-                        break;
-                    }
-                    case synth_param::Decay:{
-                        settings[chan].SetValue(SETTING_AD_DECAY, val);
-                        break;
-                    }
-                    case synth_param::Volume:{
-                        volume[chan] = val * (MAX_PARAM / MAX_MIDI_VAL);
-                        break;
-                    }
-                    default:{
-                        break;
-                    }
-                    }
-                }
+                set_CC(chan, key, val);
+                break;
             }
             default:{
                 break;

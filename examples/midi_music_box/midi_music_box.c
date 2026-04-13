@@ -100,12 +100,13 @@ int main(void) {
         printf("PGB-1 HP volume failed");
     }
     nn_set_hp_volume(1.0, 1.0);
-    // if (!nn_enable_speakers(true, false, 3)) {
-    //     printf("PGB-1 speaker init failed");
-    // }
-    // if (!nn_set_line_out_volume(1.0, 1.0, 0.0, 0.0)) {
-    //     printf("PGB-1 line out volume failed");
-    // }
+
+    if (!nn_enable_speakers(true, true, 1)) {
+        printf("PGB-1 speaker init failed");
+    }
+    if (!nn_set_line_out_volume(1.0, 1.0, 0.0, 0.0)) {
+        printf("PGB-1 line out volume failed");
+    }
 
     /* Send buffers to core1 */
     for (int i = 0; i < AUDIO_BUFFER_CNT; i++) {
@@ -115,10 +116,12 @@ int main(void) {
     midi_init(midi_in_cb);
 
     for (uint32_t frame = 0; ; frame++) {
-        seq_update();
+        if (frame % 5 == 0) {
+            seq_update();
+        }
 
         /* Update the screen every X frames */
-        if (frame % 30 == 0) {
+        if (frame % 15 == 0) {
             gui_update();
         }
         sleep_ms(1);

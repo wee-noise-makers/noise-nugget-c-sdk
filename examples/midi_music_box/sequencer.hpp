@@ -67,7 +67,7 @@ class SeqLane {
         return velocity_;
     }
     void nextVelocity(void) {
-        if (velocity_ < 15) {
+        if (velocity_ < 127) {
             velocity_++;
         }
     }
@@ -104,7 +104,7 @@ class SeqLane {
     bool lastHoldDetected_ = false;
     bool noteIsOn_ = false;
     uint8_t key_ = 70;
-    uint8_t velocity_ = 70;
+    uint8_t velocity_ = 127;
     uint8_t chan_ = 0;
 };
 
