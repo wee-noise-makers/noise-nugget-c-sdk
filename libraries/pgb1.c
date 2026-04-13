@@ -233,7 +233,11 @@ void screen_init(void) {
     sleep_ms(10);
     gpio_put(N_RESET_PIN, true);
 
+    sleep_ms(1);
+
     screen_write_cmd(SET_DISP | 0x01);
+
+    sleep_ms(1);
 
     for (int i = 0; i < sizeof(init_cmds) / sizeof(*init_cmds); i++){
         screen_write_cmd(init_cmds[i]);
